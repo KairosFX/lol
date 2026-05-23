@@ -1,0 +1,22 @@
+node_modules/
+.next/
+out/
+dist/
+.vercel/
+
+*.tsbuildinfo
+
+.env
+.env.*
+!.env.example
+
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+.DS_Store
+Thumbs.db
+
+# The app uses data/lol_detailed_guide as the committed guide archive.
+/*.txt

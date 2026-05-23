@@ -1,0 +1,99 @@
+Champion: Corki
+
+Primary Role
+Flexible Specialist
+
+Champion Identity
+Versatile champion with multiple playstyle options
+
+Abilities Overview
+- Passive: Understand how the passive affects trading and scaling.
+- Q Ability: Main damage or poke tool. Use carefully for wave control.
+- W Ability: Utility spell used for mobility, crowd control, or survivability.
+- E Ability: Secondary damage or setup tool for combos.
+- Ultimate: Main playmaking ability. Track cooldowns carefully.
+
+Strengths
+- Strong mid-game pressure
+- Good objective control
+- Can snowball leads effectively
+- Flexible itemization
+
+Weaknesses
+- Vulnerable when behind
+- Cooldown dependent
+- Can struggle against heavy crowd control
+- Requires positioning discipline
+
+Recommended Rune Setup
+Primary Tree:
+- Keystone suited for extended fights or burst depending on matchup
+- Adaptive secondary runes for lane sustain or scaling
+
+Secondary Tree:
+- Defensive or utility runes depending on enemy composition
+
+Core Item Build
+Starting Items:
+- Standard lane or jungle sustain start
+
+Core Items:
+- Mythic or core damage item
+- Boots depending on matchup
+- Situational survivability or penetration item
+
+Situational Items
+- Anti-heal against sustain teams
+- Magic resist or armor against heavy damage threats
+- Utility items for teamfighting
+
+Laning Phase Tips
+- Focus on wave management and safe trading
+- Track enemy jungle pathing
+- Use cooldown windows to pressure opponents
+- Respect level spikes and all-ins
+
+Mid Game Strategy
+- Rotate for objectives and skirmishes
+- Pressure side lanes when ahead
+- Group when teamfight impact is needed
+- Maintain vision around major objectives
+
+Late Game Strategy
+- Position carefully in teamfights
+- Play around cooldowns and summoner spells
+- Protect carries or dive priority targets depending on role
+- Avoid unnecessary deaths before objectives
+
+Combos
+- Basic Combo: Use crowd control before committing burst damage
+- Extended Combo: Chain abilities with auto attacks between cooldowns
+- Teamfight Combo: Engage or follow up after frontline initiation
+
+Power Spikes
+- Level 6 unlock
+- First completed core item
+- Two-item mid-game spike
+- Late-game scaling with full build
+
+Teamfighting Advice
+- Identify the highest-value target before committing
+- Maintain spacing and positioning
+- Save defensive cooldowns for critical moments
+- Coordinate engages with teammates
+
+Matchups and Counters
+Good Against:
+- Immobile champions
+- Weak early-game scaling picks
+
+Struggles Against:
+- Heavy poke
+- High mobility champions
+- Strong disengage compositions
+
+General Gameplay Advice
+- Review replays to improve macro decisions
+- Track objective timers constantly
+- Adapt builds based on enemy threats
+- Learn damage limits and engage ranges
