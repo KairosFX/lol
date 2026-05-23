@@ -1,19 +1,31 @@
-# League Guide Codex
+# League Champion Database
 
-A modern Next.js knowledge base for League of Legends champion guides. The app scans
-`data/lol_detailed_guide` for `.txt` files, converts each file into a champion page, and
-provides a fast searchable index.
+A static Next.js 15 champion database for League of Legends. The app is generated from a
+structured JSON dataset synced from Riot Data Dragon and League Wiki data, with a hard
+validation check for all 172 champions.
 
 ## Features
 
 - Next.js 15, React, TypeScript, and Tailwind CSS
-- Automatic `.txt` guide discovery, slug generation, and static champion routes
-- Fuzzy client-side search with keyboard navigation
-- Dark gaming-inspired responsive UI
-- Sticky guide table of contents, copy/share actions, loading skeletons, and empty states
-- Dynamic SEO metadata for each champion page
+- Static export with generated champion routes
+- 172 champion validation with duplicate-slug protection
+- Role, class, difficulty, region, release-date, popularity, and win-rate filters
+- Official Riot splash art, portrait icons, ability icons, summoner spells, rune icons, and item icons
+- Champion pages with overview data, abilities, rune preview, build recommendations, stats, matchup profiles, and map-system references
+- Responsive dark gaming UI with loading skeletons, empty states, copy/share actions, and dynamic SEO metadata
 
-## Getting Started
+## Data Sync
+
+```bash
+node scripts/sync-riot-data.mjs
+```
+
+The sync script writes `data/champion-database.json` and fails if Riot Data Dragon does not
+return exactly 172 champions, if any slug is duplicated, or if required fields are missing.
+Live win rate, pick rate, and ban rate fields are intentionally empty until a verified stats
+feed is connected.
+
+## Development
 
 ```bash
 npm install
@@ -26,11 +38,7 @@ Open `http://localhost:3000`.
 
 ```bash
 npm run build
-npm run start
 ```
 
-## Guide Data
-
-Add or update champion `.txt` files in `data/lol_detailed_guide`. The app excludes
-`README.txt` and automatically formats champion filenames such as `aurelion_sol.txt`,
-`dr._mundo.txt`, and `nunu_&_willump.txt`.
+The project is configured for static export, so a production build emits the static site to
+`out/`.

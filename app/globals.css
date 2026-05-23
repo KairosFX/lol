@@ -97,32 +97,6 @@ input {
     box-shadow: 0 0 0 3px rgba(45, 212, 191, 0.32);
   }
 
-  .champion-avatar {
-    background:
-      linear-gradient(135deg, var(--avatar-a), var(--avatar-b)),
-      linear-gradient(180deg, rgba(255, 255, 255, 0.16), transparent);
-    color: white;
-    text-shadow: 0 1px 14px rgba(0, 0, 0, 0.42);
-  }
-
-  .guide-prose h2 {
-    scroll-margin-top: 96px;
-  }
-
-  .guide-prose p {
-    color: #cbd7e8;
-    line-height: 1.78;
-  }
-
-  .guide-prose li {
-    color: #d9e5f7;
-    line-height: 1.72;
-  }
-
-  .guide-prose li::marker {
-    color: var(--bright-gold);
-  }
-
   .skeleton-shimmer {
     position: relative;
     overflow: hidden;

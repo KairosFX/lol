@@ -1,176 +1,106 @@
-import { promises as fs } from "fs";
-import path from "path";
-import { cache } from "react";
-import { extractSectionTitles } from "@/lib/guide-format";
-import type { ChampionGuide, ChampionMeta } from "@/lib/types";
-import { getAccent, getInitials, slugify } from "@/lib/utils";
+import databaseJson from "@/data/champion-database.json";
+import type { ChampionDatabase, ChampionRecord, ChampionSummary } from "@/lib/types";
 
-const guideDirectory = path.join(process.cwd(), "data", "lol_detailed_guide");
-const fallbackDirectory = process.cwd();
-const romanNumeralPattern = /^(i|ii|iii|iv|v|vi|vii|viii|ix|x)$/i;
+export const EXPECTED_CHAMPION_COUNT = 172;
 
-async function directoryExists(directory: string) {
-  try {
-    const stat = await fs.stat(directory);
-    return stat.isDirectory();
-  } catch {
-    return false;
+export const championDatabase = databaseJson as ChampionDatabase;
+
+function validateChampionDatabase(database: ChampionDatabase) {
+  if (database.expectedChampionCount !== EXPECTED_CHAMPION_COUNT) {
+    throw new Error(
+      `Champion database expected count drifted: ${database.expectedChampionCount}`,
+    );
   }
-}
 
-async function getGuideDirectory() {
-  return (await directoryExists(guideDirectory)) ? guideDirectory : fallbackDirectory;
-}
+  if (
+    database.championCount !== EXPECTED_CHAMPION_COUNT ||
+    database.champions.length !== EXPECTED_CHAMPION_COUNT
+  ) {
+    throw new Error(
+      `Expected ${EXPECTED_CHAMPION_COUNT} champions, found ${database.champions.length}`,
+    );
+  }
 
-function isGuideFile(fileName: string) {
-  return fileName.toLowerCase().endsWith(".txt") && fileName.toLowerCase() !== "readme.txt";
-}
+  const slugs = new Set<string>();
+  const duplicates: string[] = [];
 
-export function championNameFromFile(fileName: string) {
-  const baseName = path.basename(fileName, ".txt").replace(/_/g, " ");
-
-  return baseName
-    .split(" ")
-    .filter(Boolean)
-    .map((word) => {
-      if (word === "&") {
-        return word;
-      }
-
-      if (romanNumeralPattern.test(word)) {
-        return word.toUpperCase();
-      }
-
-      return word.replace(/(^|[.'-])([a-z])/g, (_, prefix: string, letter: string) => {
-        return `${prefix}${letter.toUpperCase()}`;
-      });
-    })
-    .join(" ");
-}
-
-export function championSlugFromFile(fileName: string) {
-  return slugify(path.basename(fileName, ".txt"));
-}
-
-function extractValueAfterHeading(raw: string, heading: string) {
-  const lines = raw.replace(/\r\n/g, "\n").split("\n");
-  const target = heading.toLowerCase();
-
-  for (let index = 0; index < lines.length; index += 1) {
-    if (lines[index].trim().toLowerCase() === target) {
-      for (let valueIndex = index + 1; valueIndex < lines.length; valueIndex += 1) {
-        const value = lines[valueIndex].trim();
-
-        if (value) {
-          return value;
-        }
-      }
+  for (const champion of database.champions) {
+    if (slugs.has(champion.slug)) {
+      duplicates.push(champion.slug);
     }
+
+    slugs.add(champion.slug);
   }
 
-  return "";
-}
-
-function buildExcerpt(name: string, raw: string) {
-  const role = extractValueAfterHeading(raw, "Primary Role");
-  const identity = extractValueAfterHeading(raw, "Champion Identity");
-  const opener = [identity, role].filter(Boolean).join(" / ");
-
-  if (opener) {
-    return `${name} guide for ${opener}, including abilities, rune setup, item builds, matchups, and teamfight plans.`;
+  if (duplicates.length > 0) {
+    throw new Error(`Duplicate champion slugs: ${duplicates.join(", ")}`);
   }
-
-  return `${name} guide covering abilities, rune setup, item builds, lane plans, matchups, and macro decisions.`;
 }
 
-function countWords(raw: string) {
-  return raw.trim().split(/\s+/).filter(Boolean).length;
+validateChampionDatabase(championDatabase);
+
+const champions = [...championDatabase.champions].sort((a, b) => a.name.localeCompare(b.name));
+const championBySlug = new Map(champions.map((champion) => [champion.slug, champion]));
+
+export function getAllChampions(): ChampionRecord[] {
+  return champions;
 }
 
-function buildMeta(fileName: string, content: string): ChampionMeta {
-  const name = championNameFromFile(fileName);
-  const slug = championSlugFromFile(fileName);
-  const role = extractValueAfterHeading(content, "Primary Role");
-  const identity = extractValueAfterHeading(content, "Champion Identity");
-  const sectionTitles = extractSectionTitles(content);
-  const excerpt = buildExcerpt(name, content);
-
-  return {
-    slug,
-    name,
-    fileName,
-    initials: getInitials(name),
-    role,
-    identity,
-    excerpt,
-    sectionTitles,
-    wordCount: countWords(content),
-    searchText: [name, slug, role, identity, sectionTitles.join(" "), content]
-      .join(" ")
-      .toLowerCase(),
-    accent: getAccent(slug),
-  };
-}
-
-export const getAllChampionGuides = cache(async (): Promise<ChampionGuide[]> => {
-  const directory = await getGuideDirectory();
-  const fileNames = (await fs.readdir(directory)).filter(isGuideFile).sort((a, b) => {
-    return championNameFromFile(a).localeCompare(championNameFromFile(b));
-  });
-
-  const guides = await Promise.all(
-    fileNames.map(async (fileName) => {
-      const content = await fs.readFile(path.join(directory, fileName), "utf8");
-      return {
-        ...buildMeta(fileName, content),
-        content,
-      };
-    }),
+export function getChampionSummaries(): ChampionSummary[] {
+  return champions.map(
+    ({
+      lore: _lore,
+      releasePatch: _releasePatch,
+      ratings: _ratings,
+      stats: _stats,
+      abilities: _abilities,
+      recommendations: _recommendations,
+      sources: _sources,
+      matchups: _matchups,
+      ...summary
+    }) => summary,
   );
-
-  return guides;
-});
-
-export const getAllChampions = cache(async (): Promise<ChampionMeta[]> => {
-  const guides = await getAllChampionGuides();
-  return guides.map(({ content: _content, ...meta }) => meta);
-});
-
-export async function getChampionBySlug(slug: string) {
-  const guides = await getAllChampionGuides();
-  return guides.find((guide) => guide.slug === slug) ?? null;
 }
 
-export function getFeaturedChampions(champions: ChampionMeta[], count = 6) {
-  return [...champions]
+export function getChampionBySlug(slug: string): ChampionRecord | null {
+  return championBySlug.get(slug) ?? null;
+}
+
+export function getFeaturedChampions(count = 6): ChampionSummary[] {
+  return [...getChampionSummaries()]
     .sort((a, b) => {
-      const aScore = a.slug.split("").reduce((score, letter) => score + letter.charCodeAt(0), 0);
-      const bScore = b.slug.split("").reduce((score, letter) => score + letter.charCodeAt(0), 0);
-      return bScore - aScore;
+      const releaseSort = Date.parse(b.releaseDate) - Date.parse(a.releaseDate);
+      return releaseSort || a.name.localeCompare(b.name);
     })
     .slice(0, count);
 }
 
 export function getRelatedChampions(
-  champions: ChampionMeta[],
-  champion: ChampionMeta,
+  champion: ChampionRecord,
   count = 4,
-) {
-  return champions
+): ChampionSummary[] {
+  const championRoles = new Set(champion.roles);
+  const championClasses = new Set(
+    [champion.classes.primary, champion.classes.secondary].filter(Boolean),
+  );
+
+  return getChampionSummaries()
     .filter((candidate) => candidate.slug !== champion.slug)
     .map((candidate) => {
-      const roleScore = candidate.role && candidate.role === champion.role ? 3 : 0;
-      const identityScore = candidate.identity && candidate.identity === champion.identity ? 2 : 0;
-      const sectionOverlap = candidate.sectionTitles.filter((section) =>
-        champion.sectionTitles.includes(section),
-      ).length;
+      const roleScore = candidate.roles.filter((role) => championRoles.has(role)).length * 4;
+      const classScore =
+        [candidate.classes.primary, candidate.classes.secondary].filter(
+          (championClass) => championClass && championClasses.has(championClass),
+        ).length * 3;
+      const regionScore = candidate.region === champion.region ? 1 : 0;
 
       return {
         champion: candidate,
-        score: roleScore + identityScore + sectionOverlap,
+        score: roleScore + classScore + regionScore,
       };
     })
+    .filter((entry) => entry.score > 0)
     .sort((a, b) => b.score - a.score || a.champion.name.localeCompare(b.champion.name))
     .slice(0, count)
-    .map(({ champion: relatedChampion }) => relatedChampion);
+    .map((entry) => entry.champion);
 }

@@ -12,18 +12,18 @@ const siteUrl =
 export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),
   title: {
-    default: "League Guide Codex",
-    template: "%s | League Guide Codex",
+    default: "League Champion Database",
+    template: "%s | League Champion Database",
   },
   description:
-    "A fast searchable League of Legends champion guide wiki generated from local text files.",
+    "A fast static League of Legends champion database with roles, classes, regions, abilities, runes, items, and official Riot assets.",
   icons: {
     icon: "/icon.svg",
   },
   openGraph: {
-    title: "League Guide Codex",
+    title: "League Champion Database",
     description:
-      "Browse, search, and read League of Legends champion guides from a local guide archive.",
+      "Browse and search all League of Legends champions by role, class, region, difficulty, release date, and build data.",
     type: "website",
   },
 };
@@ -42,6 +42,12 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
+      <head>
+        <link rel="preconnect" href="https://ddragon.leagueoflegends.com" />
+        <link rel="preconnect" href="https://cmsassets.rgpub.io" />
+        <link rel="dns-prefetch" href="https://ddragon.leagueoflegends.com" />
+        <link rel="dns-prefetch" href="https://cmsassets.rgpub.io" />
+      </head>
       <body>{children}</body>
     </html>
   );

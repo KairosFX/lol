@@ -18,5 +18,6 @@ pnpm-debug.log*
 .DS_Store
 Thumbs.db
 
-# The app uses data/lol_detailed_guide as the committed guide archive.
+# Local scratch files are not part of the generated static database.
 /*.txt
+/data/riot/

@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { BookOpen, Menu, Swords } from "lucide-react";
+import { Database, Menu, Swords } from "lucide-react";
 
 type SiteHeaderProps = {
   championCount: number;
@@ -14,8 +14,8 @@ export function SiteHeader({ championCount }: SiteHeaderProps) {
             <Swords aria-hidden="true" size={20} strokeWidth={1.8} />
           </span>
           <span className="min-w-0">
-            <span className="block text-sm font-semibold uppercase text-white">League Guide</span>
-            <span className="block text-xs text-slate-400">Codex</span>
+            <span className="block text-sm font-semibold uppercase text-white">League</span>
+            <span className="block text-xs text-slate-400">Champion Database</span>
           </span>
         </Link>
 
@@ -33,16 +33,16 @@ export function SiteHeader({ championCount }: SiteHeaderProps) {
             Champions
           </Link>
           <span className="ml-2 rounded-md border border-white/10 bg-white/[0.06] px-3 py-2 text-xs text-slate-300">
-            {championCount} guides
+            {championCount} champions
           </span>
         </nav>
 
         <Link
           href="/champions"
           className="focus-ring inline-flex items-center gap-2 rounded-md border border-white/10 bg-white/[0.06] px-3 py-2 text-sm text-slate-200 transition hover:border-arcane/40 hover:bg-arcane/10 hover:text-white md:hidden"
-          aria-label="Open champion index"
+          aria-label="Open champion library"
         >
-          <BookOpen aria-hidden="true" size={17} />
+          <Database aria-hidden="true" size={17} />
           <Menu aria-hidden="true" size={17} />
         </Link>
       </div>

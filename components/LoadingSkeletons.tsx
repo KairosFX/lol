@@ -21,7 +21,7 @@ export function ChampionGridSkeleton() {
   );
 }
 
-export function GuideSkeleton() {
+export function ChampionProfileSkeleton() {
   return (
     <div className="rift-shell py-10">
       <div className="mb-8 h-36 rounded-lg skeleton-shimmer" />

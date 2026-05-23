@@ -1,5 +1,5 @@
-import { GuideSkeleton } from "@/components/LoadingSkeletons";
+import { ChampionProfileSkeleton } from "@/components/LoadingSkeletons";
 
 export default function Loading() {
-  return <GuideSkeleton />;
+  return <ChampionProfileSkeleton />;
 }

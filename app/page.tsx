@@ -1,20 +1,31 @@
 import { ChampionSearch } from "@/components/ChampionSearch";
 import { Hero } from "@/components/Hero";
 import { SiteHeader } from "@/components/SiteHeader";
-import { getAllChampions, getFeaturedChampions } from "@/lib/champions";
+import { championDatabase, getChampionSummaries, getFeaturedChampions } from "@/lib/champions";
 
 export const dynamic = "force-static";
 
-export default async function Home() {
-  const champions = await getAllChampions();
-  const featuredChampions = getFeaturedChampions(champions);
+export default function Home() {
+  const champions = getChampionSummaries();
+  const featuredChampions = getFeaturedChampions();
+  const regions = [...new Set(champions.map((champion) => champion.region))].sort();
 
   return (
     <>
-      <SiteHeader championCount={champions.length} />
+      <SiteHeader championCount={championDatabase.championCount} />
       <main>
-        <Hero championCount={champions.length} featuredChampions={featuredChampions} />
-        <ChampionSearch champions={champions} featuredChampions={featuredChampions} />
+        <Hero
+          championCount={championDatabase.championCount}
+          dataVersion={championDatabase.version}
+          featuredChampions={featuredChampions}
+        />
+        <ChampionSearch
+          champions={champions}
+          featuredChampions={featuredChampions}
+          roleTabs={championDatabase.roleTabs}
+          classTabs={championDatabase.classTabs}
+          regions={regions}
+        />
       </main>
     </>
   );
