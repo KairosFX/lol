@@ -33,16 +33,16 @@ export async function generateMetadata({ params }: ChampionPageProps): Promise<M
     };
   }
 
-  const description = `${champion.name} champion profile with roles, class, region, abilities, runes, items, stats, matchups, and release data.`;
+  const description = `${champion.name} competitive profile with full rune pages, item builds, advanced statistics, matchup data, power curves, and high-elo coaching notes.`;
 
   return {
-    title: `${champion.name} Champion Database`,
+    title: `${champion.name} Competitive Profile`,
     description,
     alternates: {
       canonical: `/champions/${champion.slug}`,
     },
     openGraph: {
-      title: `${champion.name} Champion Database`,
+      title: `${champion.name} Competitive Profile`,
       description,
       type: "article",
       url: `/champions/${champion.slug}`,
@@ -75,9 +75,8 @@ export default async function ChampionPage({ params }: ChampionPageProps) {
         <ChampionProfile
           champion={champion}
           relatedChampions={relatedChampions}
-          runePaths={championDatabase.runePaths}
-          mapSystems={championDatabase.mapSystems}
           dataVersion={championDatabase.version}
+          dataGeneratedAt={championDatabase.generatedAt}
         />
       </main>
     </>

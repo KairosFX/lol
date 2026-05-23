@@ -19,6 +19,10 @@ function formatReleaseDate(value: string) {
   }).format(new Date(`${value}T00:00:00Z`));
 }
 
+function percent(value: number | null | undefined) {
+  return typeof value === "number" ? `${value.toFixed(1)}%` : "N/A";
+}
+
 export function ChampionCard({ champion, compact = false }: ChampionCardProps) {
   const secondaryClass = champion.classes.secondary;
 
@@ -50,6 +54,26 @@ export function ChampionCard({ champion, compact = false }: ChampionCardProps) {
             {champion.roles.slice(0, compact ? 2 : 3).map((role) => (
               <RoleBadge key={role} role={role} compact />
             ))}
+            {champion.liveStats.tier ? (
+              <span className="inline-flex items-center rounded-md border border-brightgold/40 bg-brightgold/10 px-2 py-1 text-[11px] font-semibold text-brightgold">
+                {champion.liveStats.tier}
+              </span>
+            ) : null}
+          </div>
+
+          <div className="mt-3 grid grid-cols-3 gap-1.5 text-xs">
+            <span className="rounded-md border border-white/10 bg-abyss/50 px-2 py-1.5">
+              <span className="block font-black text-white">{percent(champion.liveStats.winRate)}</span>
+              <span className="text-slate-500">Win</span>
+            </span>
+            <span className="rounded-md border border-white/10 bg-abyss/50 px-2 py-1.5">
+              <span className="block font-black text-white">{percent(champion.liveStats.pickRate)}</span>
+              <span className="text-slate-500">Pick</span>
+            </span>
+            <span className="rounded-md border border-white/10 bg-abyss/50 px-2 py-1.5">
+              <span className="block font-black text-white">{percent(champion.liveStats.banRate)}</span>
+              <span className="text-slate-500">Ban</span>
+            </span>
           </div>
 
           {!compact ? (

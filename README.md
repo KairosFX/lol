@@ -1,17 +1,18 @@
-# League Champion Database
+# League Competitive Intelligence
 
-A static Next.js 15 champion database for League of Legends. The app is generated from a
-structured JSON dataset synced from Riot Data Dragon and League Wiki data, with a hard
-validation check for all 172 champions.
+A static Next.js 15 competitive intelligence platform for League of Legends. The app is
+generated from a structured JSON dataset synced from Riot Data Dragon and League Wiki data,
+with hard validation for all 172 champions and every generated rune, item, matchup, and
+coaching section.
 
 ## Features
 
 - Next.js 15, React, TypeScript, and Tailwind CSS
 - Static export with generated champion routes
-- 172 champion validation with duplicate-slug protection
-- Role, class, difficulty, region, release-date, popularity, and win-rate filters
+- 172 champion validation with duplicate-slug and missing-data protection
+- Role, class, difficulty, lane, region, patch, rank, tier, win-rate, popularity, and ban-rate filters
 - Official Riot splash art, portrait icons, ability icons, summoner spells, rune icons, and item icons
-- Champion pages with overview data, abilities, rune preview, build recommendations, stats, matchup profiles, and map-system references
+- Champion pages with full rune pages, item build timelines, item explanations, advanced analytics, matchup statistics, and pro coaching notes
 - Responsive dark gaming UI with loading skeletons, empty states, copy/share actions, and dynamic SEO metadata
 
 ## Data Sync
@@ -21,9 +22,11 @@ node scripts/sync-riot-data.mjs
 ```
 
 The sync script writes `data/champion-database.json` and fails if Riot Data Dragon does not
-return exactly 172 champions, if any slug is duplicated, or if required fields are missing.
-Live win rate, pick rate, and ban rate fields are intentionally empty until a verified stats
-feed is connected.
+return exactly 172 champions, if any slug is duplicated, or if required competitive fields are
+missing.
+
+Optional aggregate provider data can be dropped into `data/meta-overrides.json`. Matching rows
+override generated patch-model stats when the row patch matches the current Data Dragon version.
 
 ## Development
 

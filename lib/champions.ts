@@ -35,12 +35,56 @@ function validateChampionDatabase(database: ChampionDatabase) {
   if (duplicates.length > 0) {
     throw new Error(`Duplicate champion slugs: ${duplicates.join(", ")}`);
   }
+
+  if (database.runeTrees.length !== 5) {
+    throw new Error(`Expected 5 rune trees, found ${database.runeTrees.length}`);
+  }
+
+  const incompleteChampions = database.champions.filter((champion) => {
+    const runePages = champion.recommendations.runePages;
+    const itemBuild = champion.recommendations.itemBuild;
+
+    return (
+      runePages.length < 4 ||
+      runePages.some(
+        (page) =>
+          page.primaryRunes.length < 4 ||
+          page.secondaryRunes.length < 2 ||
+          page.shards.length < 3 ||
+          !page.matchCount,
+      ) ||
+      itemBuild.startingItems.length === 0 ||
+      itemBuild.coreBuild.length === 0 ||
+      itemBuild.fullBuild.length === 0 ||
+      champion.competitive.metrics.length < 10 ||
+      champion.competitive.gameLength.length < 4 ||
+      champion.coaching.micro.length === 0 ||
+      champion.coaching.macro.length === 0 ||
+      champion.matchups.strongAgainst.length === 0 ||
+      champion.matchups.weakAgainst.length === 0
+    );
+  });
+
+  if (incompleteChampions.length > 0) {
+    throw new Error(
+      `Incomplete competitive data: ${incompleteChampions
+        .map((champion) => champion.name)
+        .join(", ")}`,
+    );
+  }
 }
 
 validateChampionDatabase(championDatabase);
 
 const champions = [...championDatabase.champions].sort((a, b) => a.name.localeCompare(b.name));
 const championBySlug = new Map(champions.map((champion) => [champion.slug, champion]));
+const tierOrder: Record<string, number> = {
+  "S+": 5,
+  S: 4,
+  A: 3,
+  B: 2,
+  C: 1,
+};
 
 export function getAllChampions(): ChampionRecord[] {
   return champions;
@@ -55,7 +99,8 @@ export function getChampionSummaries(): ChampionSummary[] {
       stats: _stats,
       abilities: _abilities,
       recommendations: _recommendations,
-      sources: _sources,
+      competitive: _competitive,
+      coaching: _coaching,
       matchups: _matchups,
       ...summary
     }) => summary,
@@ -69,8 +114,13 @@ export function getChampionBySlug(slug: string): ChampionRecord | null {
 export function getFeaturedChampions(count = 6): ChampionSummary[] {
   return [...getChampionSummaries()]
     .sort((a, b) => {
-      const releaseSort = Date.parse(b.releaseDate) - Date.parse(a.releaseDate);
-      return releaseSort || a.name.localeCompare(b.name);
+      const tierSort =
+        (tierOrder[b.liveStats.tier ?? ""] ?? -1) -
+        (tierOrder[a.liveStats.tier ?? ""] ?? -1);
+      const pickSort = (b.liveStats.pickRate ?? -1) - (a.liveStats.pickRate ?? -1);
+      const winSort = (b.liveStats.winRate ?? -1) - (a.liveStats.winRate ?? -1);
+
+      return tierSort || pickSort || winSort || a.name.localeCompare(b.name);
     })
     .slice(0, count);
 }

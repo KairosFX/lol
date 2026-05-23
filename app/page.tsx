@@ -17,6 +17,7 @@ export default function Home() {
         <Hero
           championCount={championDatabase.championCount}
           dataVersion={championDatabase.version}
+          dataGeneratedAt={championDatabase.generatedAt}
           featuredChampions={featuredChampions}
         />
         <ChampionSearch

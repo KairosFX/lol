@@ -6,9 +6,9 @@ import { championDatabase, getChampionSummaries, getFeaturedChampions } from "@/
 export const dynamic = "force-static";
 
 export const metadata: Metadata = {
-  title: "Champion Library",
+  title: "Champion Meta Library",
   description:
-    "Search and filter all 172 League of Legends champions by role, class, region, difficulty, and release date.",
+    "Search and filter all 172 League of Legends champions by role, class, tier, lane, patch, rank, win rate, and matchup profile.",
 };
 
 export default function ChampionsPage() {
@@ -22,11 +22,11 @@ export default function ChampionsPage() {
       <main className="pb-10">
         <section className="rift-shell py-10 md:py-14">
           <h1 className="max-w-3xl text-4xl font-black text-white md:text-6xl">
-            Champion Library
+            Champion Meta Library
           </h1>
           <p className="mt-4 max-w-2xl text-lg leading-8 text-slate-300">
-            A complete static index of all 172 champions with role, class, region, release,
-            resource, build, rune, and ability data.
+            A complete index of all 172 champions with tier filters, rune pages, build paths,
+            advanced statistics, matchup data, and high-elo coaching notes.
           </p>
         </section>
         <ChampionSearch

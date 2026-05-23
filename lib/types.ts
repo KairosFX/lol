@@ -17,6 +17,33 @@ export type RunePath = {
   icon: string;
 };
 
+export type Rune = {
+  id: number;
+  key: string;
+  name: string;
+  icon: string;
+  shortDesc: string;
+  longDesc: string;
+};
+
+export type RuneTree = RunePath & {
+  slots: Array<{
+    runes: Rune[];
+  }>;
+};
+
+export type RuneSelection = Rune & {
+  path: string;
+  slot: number;
+};
+
+export type RuneShard = {
+  id: number;
+  name: string;
+  category: "offense" | "flex" | "defense";
+  icon: string;
+};
+
 export type ChampionAsset = {
   icon: string;
   splash: string;
@@ -42,6 +69,15 @@ export type ChampionItem = {
   icon: string;
 };
 
+export type ItemBuildEntry = ChampionItem & {
+  winRate: number;
+  pickRate: number;
+  matchCount: number;
+  timing: string;
+  purchaseOrderFrequency: number;
+  explanation: string;
+};
+
 export type SummonerSpell = {
   key: string;
   id: string;
@@ -60,6 +96,21 @@ export type RuneRecommendation = {
     name: string;
     icon: string;
   } | null;
+};
+
+export type RunePage = {
+  id: string;
+  label: string;
+  style: "highest-win" | "popular" | "pro" | "situational";
+  primaryPath: RunePath;
+  secondaryPath: RunePath;
+  primaryRunes: RuneSelection[];
+  secondaryRunes: RuneSelection[];
+  shards: RuneShard[];
+  winRate: number;
+  pickRate: number;
+  matchCount: number;
+  note: string;
 };
 
 export type ChampionStats = {
@@ -83,6 +134,17 @@ export type MatchupChampion = {
   slug: string;
   name: string;
   icon: string;
+};
+
+export type MatchupStat = MatchupChampion & {
+  winRate: number;
+  laneKillRate: number;
+  goldDiffAt15: number;
+  xpDiffAt15: number;
+  csDiffAt15: number;
+  matchCount: number;
+  difficulty: "Easy" | "Playable" | "Hard";
+  note: string;
 };
 
 export type ChampionSummary = {
@@ -114,9 +176,83 @@ export type ChampionSummary = {
     winRate: number | null;
     pickRate: number | null;
     banRate: number | null;
+    matchCount?: number | null;
+    tier?: string | null;
+    tierRank?: number | null;
+    rolePopularity?: number | null;
+    rank?: string | null;
+    region?: string | null;
+    patch?: string | null;
     source: string | null;
   };
   searchText: string;
+};
+
+export type AdvancedMetric = {
+  key: string;
+  label: string;
+  value: number;
+  description: string;
+};
+
+export type GameLengthStat = {
+  bucket: string;
+  winRate: number;
+  rating: number;
+  note: string;
+};
+
+export type BuildTimelineStep = {
+  label: string;
+  minute: string;
+  items: ItemBuildEntry[];
+};
+
+export type ItemBuildProfile = {
+  startingItems: ItemBuildEntry[];
+  firstRecallItems: ItemBuildEntry[];
+  bootsOptions: ItemBuildEntry[];
+  coreBuild: ItemBuildEntry[];
+  fullBuild: ItemBuildEntry[];
+  situationalItems: ItemBuildEntry[];
+  antiHealOptions: ItemBuildEntry[];
+  defensiveOptions: ItemBuildEntry[];
+  snowballBuilds: ItemBuildEntry[];
+  lateGameSellOptions: ItemBuildEntry[];
+  timeline: BuildTimelineStep[];
+};
+
+export type CoachingSection = {
+  title: string;
+  points: string[];
+};
+
+export type ChampionCompetitiveProfile = {
+  patch: string;
+  region: string;
+  rank: string;
+  role: RoleName;
+  tier: string;
+  tierRank: number;
+  matchCount: number;
+  winRate: number;
+  pickRate: number;
+  banRate: number;
+  rolePopularity: number;
+  earlyGameRating: number;
+  midGameRating: number;
+  lateGameRating: number;
+  snowballStrength: number;
+  scalingScore: number;
+  teamfightRating: number;
+  objectiveControlRating: number;
+  roamingEffectiveness: number;
+  laneDominanceScore: number;
+  carryPotentialScore: number;
+  metrics: AdvancedMetric[];
+  gameLength: GameLengthStat[];
+  patchTrend: string;
+  metaEvolution: string;
 };
 
 export type ChampionRecord = ChampionSummary & {
@@ -139,37 +275,24 @@ export type ChampionRecord = ChampionSummary & {
   recommendations: {
     skillOrder: Array<"Q" | "W" | "E">;
     runePage: RuneRecommendation;
+    runePages: RunePage[];
     summonerSpells: SummonerSpell[];
     coreItems: ChampionItem[];
     situationalItems: ChampionItem[];
+    itemBuild: ItemBuildProfile;
   };
-  sources: {
-    riotDataDragon: string;
-    riotUniverse: string | null;
-    leagueWiki: string;
+  competitive: ChampionCompetitiveProfile;
+  coaching: {
+    micro: CoachingSection[];
+    macro: CoachingSection[];
+    highElo: CoachingSection[];
+    pro: CoachingSection[];
   };
   matchups: {
     slug: string;
-    strongAgainst: MatchupChampion[];
-    weakAgainst: MatchupChampion[];
+    strongAgainst: MatchupStat[];
+    weakAgainst: MatchupStat[];
   };
-};
-
-export type MapSystemData = {
-  lanes: Array<{
-    role: RoleName;
-    assignment: string;
-  }>;
-  objectiveTimers: Array<{
-    objective: string;
-    firstSpawn: string;
-    respawn: string;
-  }>;
-  csGuide: Array<{
-    role: RoleName;
-    target: string;
-  }>;
-  junglePaths: string[];
 };
 
 export type ChampionDatabase = {
@@ -177,10 +300,9 @@ export type ChampionDatabase = {
   generatedAt: string;
   expectedChampionCount: number;
   championCount: number;
-  sources: string[];
   runePaths: RunePath[];
+  runeTrees: RuneTree[];
   roleTabs: RoleName[];
   classTabs: ChampionClassName[];
-  mapSystems: MapSystemData;
   champions: ChampionRecord[];
 };

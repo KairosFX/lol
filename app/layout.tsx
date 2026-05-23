@@ -12,18 +12,18 @@ const siteUrl =
 export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),
   title: {
-    default: "League Champion Database",
-    template: "%s | League Champion Database",
+    default: "League Competitive Intelligence",
+    template: "%s | League Competitive Intelligence",
   },
   description:
-    "A fast static League of Legends champion database with roles, classes, regions, abilities, runes, items, and official Riot assets.",
+    "A fast League of Legends competitive intelligence platform with champion statistics, full rune pages, item builds, matchups, and coaching data.",
   icons: {
     icon: "/icon.svg",
   },
   openGraph: {
-    title: "League Champion Database",
+    title: "League Competitive Intelligence",
     description:
-      "Browse and search all League of Legends champions by role, class, region, difficulty, release date, and build data.",
+      "Browse and search all League of Legends champions by role, class, tier, win rate, builds, runes, and matchups.",
     type: "website",
   },
 };

@@ -15,7 +15,7 @@ export function SiteHeader({ championCount }: SiteHeaderProps) {
           </span>
           <span className="min-w-0">
             <span className="block text-sm font-semibold uppercase text-white">League</span>
-            <span className="block text-xs text-slate-400">Champion Database</span>
+            <span className="block text-xs text-slate-400">Competitive Intel</span>
           </span>
         </Link>
 
